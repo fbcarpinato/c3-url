@@ -1,10 +1,5 @@
 module url;
 
-enum Scheme : char(int value)
-{
-  HTTP      = 1,
-  HTTPS     = 2,
-}
 struct Url
 {
   Scheme    scheme;
@@ -29,7 +24,6 @@ fault UrlError {
 fn Url! from_string(String url)
 {
   int len = url.len;
-
   if (len == 0)
   {
     return UrlError.EMPTY?;
@@ -61,9 +55,12 @@ fn Url! from_string(String url)
 
   char[] host = url[current_index..temp];
 
+  String[] parts = url.tsplit(":");
+
   return Url{
-      .scheme = scheme,
+      .scheme = parse_scheme(parts[0]),
       .host = (String)host
   };
 }
+
 
