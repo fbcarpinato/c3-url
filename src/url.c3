@@ -24,42 +24,27 @@ fault UrlError {
 fn Url! from_string(String url)
 {
   int len = url.len;
+
   if (len == 0)
   {
     return UrlError.EMPTY?;
   }
 
-  int current_index = 0;
+  String[] parts = url.tsplit(":", 2);
 
-  int temp = current_index;
-  while (temp < len - 1 && url[temp + 1] != ':') temp++;
-
-  Scheme scheme;
-
-  switch (url[current_index..temp]) {
-      case "https": {
-        scheme = Scheme.HTTPS;
-      }
-      case "http": {
-        scheme = Scheme.HTTP;
-      }
-      default: {
-          return UrlError.INVALID_SCHEME?;
-      }
+  if (parts.len != 2) {
+    return UrlError.MISSING_SCHEME_SEPARATOR?;
   }
 
-  temp += 4;
-  current_index = temp;
+  Scheme scheme = parse_scheme(parts[0]);
 
-  while (temp < len - 1 && url[temp + 1] != ':') temp++;
-
-  char[] host = url[current_index..temp];
-
-  String[] parts = url.tsplit(":");
+  if (scheme == Scheme.UNKNOWN)
+  {
+    return UrlError.INVALID_SCHEME?;
+  }
 
   return Url{
-      .scheme = parse_scheme(parts[0]),
-      .host = (String)host
+      .scheme = scheme
   };
 }
 
