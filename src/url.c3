@@ -1,12 +1,13 @@
 module url;
 
+import std::io;
+
 struct Url {
   Scheme    scheme;
   Authority authority;
-  String    path;
+  Path      path;
   String    query;
 }
-
 
 fn Url! from_string(String url) {
   int len = url.len;
@@ -15,25 +16,33 @@ fn Url! from_string(String url) {
     return UrlError.EMPTY?;
   }
 
-  String[] parts = url.tsplit("://", 2);
-
-  if (parts.len != 2) {
-    return UrlError.MISSING_SCHEME_SEPARATOR?;
-  }
-
-  Scheme! scheme = parse_scheme(parts[0]);
+  Scheme! scheme = parse_scheme(url);
 
   if (catch error = scheme) {
     return error?;
   }
 
-  parts = parts[1].tsplit("/", 1);
+  url = url.strip(scheme.value);
 
-  Authority! authority = parse_authority(parts[0]);
+  if (
+    url[0] != ':' ||
+    url[1] != '/' ||
+    url[2] != '/'
+  ) {
+    return UrlError.MISSING_SCHEME_SEPARATOR?;
+  }
+
+  url = url.strip("://");
+
+  Authority! authority = parse_authority(url);
 
   if (catch error = authority) {
     return error?;
   }
+
+  url = url.strip(authority.raw);
+
+  io::printfn("remaining part %s", url);
 
   return Url{
     .scheme = scheme,

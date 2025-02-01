@@ -2,8 +2,11 @@ import url;
 
 fn void test_no_scheme() @test
 {
-  url::Scheme scheme = url::parse_scheme("")!!;
-  assert(scheme == url::Scheme.NONE, "No scheme gets parsed correctly");
+  url::Scheme! scheme = url::parse_scheme("");
+
+	anyfault error = @catch(scheme);
+
+  assert(error == UrlError.INVALID_SCHEME, "Unknown scheme gets parsed correctly");
 }
 
 fn void test_http_scheme() @test

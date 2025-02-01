@@ -1,12 +1,33 @@
 module url;
 
 struct Authority {
+  String raw;
   String host;
   int port;
 }
 
-fn Authority! parse_authority(String authority_url) {
-  Authority authority = {.host = "", .port = -1};
+fn Authority! parse_authority(String url) {
+  if (url.len == 0) {
+    return UrlError.INVALID_AUTHRORITY?;
+  }
+
+  usz start = 0;
+  usz end = url.len - 1;
+
+  for (usz i = start; i < url.len - 1; ++i) {
+    if (url[i + 1] == '/' || url[i + 1] == '?') {
+      end = i;
+      break;
+    }
+  }
+
+  String authority_url = url[start..end];
+
+  Authority authority = {
+    .raw = authority_url,
+    .host = "",
+    .port = -1
+  };
 
   if (authority_url.len == 0) {
     return UrlError.INVALID_AUTHRORITY?;

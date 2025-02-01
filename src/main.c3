@@ -5,7 +5,7 @@ import std::io;
 import url;
 
 fn void main() {
-  Url! url = url::from_string("https://test.com:8080");
+  Url! url = url::from_string("https://test.com:8080?tes=ciao");
 
   if (catch error = url) {
     io::printfn("Found some error %s", error);

@@ -12,7 +12,7 @@ fn void test_invalid_scheme() @test
 
 fn void test_missing_separator() @test
 {
-  Url! url = url::from_string("test//test.com");
+  Url! url = url::from_string("wss//test.com");
 
   anyfault excuse = @catch(url);
 
