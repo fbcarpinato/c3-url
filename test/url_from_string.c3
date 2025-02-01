@@ -6,7 +6,7 @@ fn void test_invalid_scheme() @test
 
   anyfault excuse = @catch(url);
 
-  assert(excuse == url::UrlError.INVALID_SCHEME, "Url schema is invalid");
+  assert(excuse == url::UrlError.INVALID_SCHEME, "Url scheme is invalid");
 }
 
 
